@@ -1,0 +1,87 @@
+name: Xmake Build MCBEMoreDropItems.dll
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  BUILD_TYPE: releasedbg
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: setup xmake
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+
+    - run: |
+        xmake repo -u
+
+    - run: |
+        xmake f -a x64 -m ${{env.BUILD_TYPE}} -p windows -v -y
+
+    - run: |
+        xmake -v -y
+      
+    - name: Upload MCBEMoreDropItems.dll
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}.dll
+        path: ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.dll
+
+    - name: Upload MCBEMoreDropItems.pdb
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}.pdb
+        path: ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.pdb
+
+  publish_release:
+    name: Publish release
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{github.workspace}}/build/download/
+          
+      - name: Get tag
+        id: tag
+        uses: devops-actions/action-get-tag@v1.0.2
+        with:
+            default: v0.0.0 # Optional: Default version when tag not found
+
+      - name: cmd
+        working-directory: ${{ env.GITHUB_WORKSPACE }}
+        run: |
+          dir build/download/
+          dir .
+        shell: bash
+
+      - name: Create release
+        #if: github.event.inputs.status != 'stable'
+        uses: ncipollo/release-action@v1
+        with:
+          prerelease: false # 是否是预览版
+          tag: ${{steps.tag.outputs.tag}}
+          bodyFile: "README.md"
+          #name: 0
+          artifacts: |
+            ${{github.workspace}}/build/${{ github.event.repository.name }}.dll
+            ${{github.workspace}}/build/${{ github.event.repository.name }}.pdb
+        env:
+          GITHUB_REPOSITORY: CNGEGE/${{ github.event.repository.name }}
