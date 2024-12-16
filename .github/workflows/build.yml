@@ -25,7 +25,10 @@ jobs:
 
     - run: |
         xmake repo -u
-
+        
+    - run: |
+        chcp 65001
+        
     - run: |
         xmake f -a x64 -m ${{env.BUILD_TYPE}} -p windows -v -y
 
@@ -78,10 +81,10 @@ jobs:
         with:
           prerelease: false # 是否是预览版
           tag: ${{steps.tag.outputs.tag}}
-          bodyFile: "README.md"
+          bodyFile: "ReleaseBody.md"
           #name: 0
           artifacts: |
-            ${{github.workspace}}/build/${{ github.event.repository.name }}.dll
-            ${{github.workspace}}/build/${{ github.event.repository.name }}.pdb
+            ${{github.workspace}}/build/download/${{ github.event.repository.name }}.dll
+            ${{github.workspace}}/build/download/${{ github.event.repository.name }}.pdb
         env:
           GITHUB_REPOSITORY: CNGEGE/${{ github.event.repository.name }}
