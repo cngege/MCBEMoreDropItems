@@ -35,17 +35,14 @@ jobs:
     - run: |
         xmake -v -y
       
-    - name: Upload MCBEMoreDropItems.dll
+    - name: Upload MCBEMoreDropItems
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.repository.name }}.dll
-        path: ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.dll
+        name: ${{ github.event.repository.name }}
+        path: |
+          ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.dll
+          ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.pdb
 
-    - name: Upload MCBEMoreDropItems.pdb
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.event.repository.name }}.pdb
-        path: ${{github.workspace}}/build/windows/x64/${{env.BUILD_TYPE}}/${{ github.event.repository.name }}.pdb
 
   publish_release:
     name: Publish release
@@ -83,4 +80,4 @@ jobs:
           tag: ${{steps.tag.outputs.tag}}
           bodyFile: "ReleaseBody.md"
           #name: 0
-          artifacts: build/download/${{ github.event.repository.name }}.*
+          artifacts: build/download/${{ github.event.repository.name }}/${{ github.event.repository.name }}.dll,build/download/${{ github.event.repository.name }}/${{ github.event.repository.name }}.pdb
