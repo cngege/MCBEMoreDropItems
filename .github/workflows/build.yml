@@ -83,7 +83,4 @@ jobs:
           tag: ${{steps.tag.outputs.tag}}
           bodyFile: "ReleaseBody.md"
           #name: 0
-          artifacts: ${{github.workspace}}/build/download/${{ github.event.repository.name }}.dll,${{github.workspace}}/build/download/${{ github.event.repository.name }}.pdb
-            
-        env:
-          GITHUB_REPOSITORY: CNGEGE/${{ github.event.repository.name }}
+          artifacts: build/download/${{ github.event.repository.name }}.*
