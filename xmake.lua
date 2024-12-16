@@ -1,10 +1,9 @@
-add_rules("mode.debug", "mode.release")
+add_rules("mode.releasedbg", "mode.release")
 
 add_requires("lighthook")
 
 target("MCBEMoreDropItems")
     set_kind("shared")
-
 	add_defines("USE_LIGHTHOOK")
 	add_defines("INCLIENT")
 
