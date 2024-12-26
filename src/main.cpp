@@ -2,13 +2,32 @@
 
 #include "HookManager/HookManager.hpp"
 #include "Utils/Utils.h"
+#include <imgui.h>
 
+static bool ModExitTag = false;
+static bool* Tag = nullptr;
+static int Id = 0;
+static void* imgui_print = nullptr;
+
+// 实现日志函数 注意C++的变量放置位置
+void LogPrint(const char* fmt, ...) {
+    if(Tag && Tag[0] && imgui_print) {
+        char buffer[1024];
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(buffer, sizeof(buffer), fmt, args);
+        va_end(args);
+        ((void(__fastcall*)(const char*))imgui_print)(buffer);
+    }
+}
+
+int blockDestroy = 100;
 
 HookInstance* hook = nullptr;
 // 被Hook函数的实现
 void* Block_playerDestroy(void* block, void* player, void* pos) {
     auto original = hook->oriForSign(Block_playerDestroy);
-    for(int i = 0; i < 99; i++) {
+    for(int i = 0; i < blockDestroy - 1; i++) {
         original(block, player, pos);
     }
     return original(block, player, pos);
@@ -53,9 +72,31 @@ void main(HMODULE hModule) {
 }
 
 void exit(HMODULE hModule) {
+    ModExitTag = true;
+    Tag[Id] = false;
     if(hook) hook->unhook();
 }
 
+
+// 此为ImGui用于渲染的接口
+extern "C" __declspec(dllexport) void __stdcall ImGuiRender(ImGuiIO* io, ImGuiContext* ctx) {
+    ImGui::SetCurrentContext(ctx);
+    //ImGui::GetIO() = *io;
+
+    if(ImGui::Begin("百倍掉落物")) {
+        ImGui::Text("方块掉落数量");
+        ImGui::SliderInt("数量", &blockDestroy, 1, 200);
+    }
+    ImGui::End();
+}
+
+// 此为通知标记更改和日志函数的接口
+extern "C" __declspec(dllexport) void __stdcall ImGuiUpdateData(bool tag[], int id, void* funptr) {
+    Tag = tag;
+    Id = id;
+    tag[id] = !ModExitTag;
+    imgui_print = funptr;
+}
 
 
 // Dll入口函数

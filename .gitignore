@@ -10,4 +10,4 @@ build/
 .vs/
 CppProperties.json
 Launch.vs.json
-
+vsxmake2022/
