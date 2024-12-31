@@ -73,7 +73,7 @@ void main(HMODULE hModule) {
 
 void exit(HMODULE hModule) {
     ModExitTag = true;
-    Tag[Id] = false;
+    if(Tag && Id && Tag[0]) Tag[Id] = false;
     if(hook) hook->unhook();
 }
 
@@ -83,7 +83,7 @@ extern "C" __declspec(dllexport) void __stdcall ImGuiRender(ImGuiIO* io, ImGuiCo
     ImGui::SetCurrentContext(ctx);
     //ImGui::GetIO() = *io;
 
-    if(ImGui::Begin("百倍掉落物")) {
+    if(ImGui::Begin("百倍掉落物", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("方块掉落数量");
         ImGui::SliderInt("数量", &blockDestroy, 1, 200);
     }
