@@ -1,4 +1,4 @@
-# Xmake cache
+﻿# Xmake cache
 .xmake/
 build/
 
@@ -8,6 +8,6 @@ build/
 
 # vs
 .vs/
-CppProperties.json
+!CppProperties.json
 Launch.vs.json
 vsxmake2022/
