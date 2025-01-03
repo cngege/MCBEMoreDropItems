@@ -81,7 +81,8 @@ void exit(HMODULE hModule) {
 // 此为ImGui用于渲染的接口
 extern "C" __declspec(dllexport) void __stdcall ImGuiRender(ImGuiIO* io, ImGuiContext* ctx) {
     ImGui::SetCurrentContext(ctx);
-    //ImGui::GetIO() = *io;
+    memcpy_s(&ImGui::GetIO(), sizeof(ImGuiIO), io, sizeof(ImGuiIO));
+    
 
     if(ImGui::Begin("百倍掉落物", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("方块掉落数量");
