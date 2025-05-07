@@ -38,7 +38,7 @@ void main(HMODULE hModule) {
     //uintptr_t addr = (uintptr_t)GetModuleHandleA("Minecraft.Windows.exe") + 0x3A7CED0;
 
     SignCode sign("Block::playerDestroy");
-    sign << "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 4D 8B E8 4C 8B F2 48 8B F9";
+    sign << "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 4D 8B E8 4C 8B F2 4C 8B F9";
     sign.AddSignCall("E8 ? ? ? ? E9 ? ? ? ? 49 8B CE E8 ? ? ? ? 48 85");
     sign.AddSignCall("75 ? 4D 8B ? 48 8B 57 ? 49 8B CE E8", 13);
 
@@ -68,6 +68,9 @@ void main(HMODULE hModule) {
     if(sign) {
         hook = HookManager::getInstance()->addHook(*sign, Block_playerDestroy);
         hook->hook();
+    }
+    else {
+        LogPrint("[error] 没有一个可用的特征码");
     }
 }
 
