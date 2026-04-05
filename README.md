@@ -1,5 +1,5 @@
 # MCBEMoreDropItems
- Minecraft Windows 基岩版客户端 百倍掉落物（`1.21.51.01+`）
+ Minecraft Windows 基岩版客户端 百倍掉落物
 
 
 ### 使用方法
@@ -9,7 +9,7 @@
 
 
 ### 使用库
- - [lighthook](https://github.com/SamuelTulach/LightHook)
+ - [Minhook](https://github.com/TsudaKageyu/minhook.git)
  - [HookManager](https://github.com/cngege/HookManager)
 
 ### 效果图片
